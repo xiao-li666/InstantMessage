@@ -1,0 +1,300 @@
+QDialog#LoginDialog,#RegisterDialog{
+background-color:rgb(255,255,255)
+}
+
+#userLabel,#passLabel{
+    color:black;
+}
+
+#errTip[state='normal']{
+    color: green;
+}
+
+#errTip[state='err']{
+    color: red;
+}
+
+#passLabel[state='unvisible']{
+   border-image: url(:/res/unvisible.png);
+}
+
+#passLabel[state='unvisible_hover']{
+   border-image: url(:/res/unvisible_hover.png);
+}
+
+#passLabel[state='visible']{
+   border-image: url(:/res/visible.png);
+}
+
+#passLabel[state='visible_hover']{
+   border-image: url(:/res/visible_hover.png);
+}
+
+#confirmLabel[state='unvisible']{
+   border-image: url(:/res/unvisible.png);
+}
+
+#confirmLabel[state='unvisible_hover']{
+   border-image: url(:/res/unvisible_hover.png);
+}
+
+#confirmLabel[state='visible']{
+   border-image: url(:/res/visible.png);
+}
+
+#confirmLabel[state='visible_hover']{
+   border-image: url(:/res/visible_hover.png);
+}
+
+#forgetLabel[state='normal'],#forgetLabel[state='selected']{
+   color:black;
+}
+
+#forgetLabel[state='normal_hover'],#forgetLabel[state='selected_hover']{
+   color:rgb(42,112,241);
+}
+
+
+
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* 为LoginDialog设置背景，同时优化子控件样式 */
+#LoginDialog {
+    background-image: url(:/res/02.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+}
+
+/* 为对话框中的控件设置透明/半透明效果 */
+#LoginDialog QLabel {
+    background: transparent;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+#LoginDialog QLineEdit {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 18px;
+    color: #000;
+}
+
+#LoginDialog QPushButton {
+    background-color: rgba(74, 144, 226, 0.5);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+#LoginDialog QPushButton:hover {
+    background-color: rgba(74, 144, 226, 0.9);
+}
+/*-------------------------------------------------------------------------------------------------------------------------------------------*/
+#side_bar_widget{
+    background-color:rgb(46,46,46);
+}
+
+#addBtn[state='normal']{
+    border-image:url(:/res/add_friend_normal.png);
+}
+#addBtn[state='hover']{
+    border-image:url(:/res/add_friend_hover.png);
+}
+#addBtn[state='press']{
+    border-image:url(:/res/add_friend.png);
+}
+#searchWidget{
+    background-color:rgb(247,247,247);
+}
+#searchEdit{
+    border: 2px solid #f1f1f1;
+}
+#chat_user_widget{
+    background-color:rgb(0,0,0);
+}
+#chatUserList {
+    background-color: rgb(247,247,248);
+    border: none;
+}
+
+#chatUserList::item:selected {
+    background-color: #d3d7d4;
+    border: none;
+    outline: none;
+}
+
+#chatUserList::item:hover {
+    background-color: rgb(206,207,208);
+    border: none;
+    outline: none;
+}
+
+#chatUserList::focus {
+    border: none;
+    outline: none;
+}
+
+#ChatUserWid{
+    background-color:rgb(247,247,247);
+    border: none;
+}
+#userChatLabel{
+    color:rgb(153,153,153);
+    font-size: 14px;
+    font-family: "Microsoft YaHei";
+}
+#userNameLabel{
+    color:rgb(0,0,0);
+    font-size: 16px;
+    font-weight: normal;
+    font-family: "Microsoft YaHei";
+}
+
+#timeWidget #timeLabel{
+   color:rgb(140,140,140);
+   font-size: 12px;
+   font-family: "Microsoft YaHei";
+}
+QScrollBar:vertical {
+    background: transparent; /* 将轨道背景设置为透明 */
+    width: 8px; /* 滚动条宽度，根据需要调整 */
+    margin: 0px; /* 移除滚动条与滑块之间的间距 */
+}
+
+QScrollBar::handle:vertical {
+    background: rgb(173,170,169); /* 滑块颜色 */
+    min-height: 10px; /* 滑块最小高度，根据需要调整 */
+    border-radius: 4px; /* 滑块边缘圆角，调整以形成椭圆形状 */
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px; /* 移除上下按钮 */
+    border: none; /* 移除边框 */
+    background: transparent; /* 背景透明 */
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none; /* 页面滚动部分背景透明 */
+}
+
+LoadingDlg{
+    background: #f2eada;
+}
+#titleLabel{
+    font-family: "Microsoft YaHei";
+    font-size: 18px;
+    font-weight: normal;
+}
+
+#chatEdit{
+    background: #ffffff;
+    border: none; /* 隐藏边框 */
+    font-family: "Microsoft YaHei"; /* 设置字体 */
+    font-size: 18px; /* 设置字体大小 */
+    padding: 5px; /* 设置内边距 */
+}
+#sendWid{
+    background: #ffffff;
+    border: none; /* 隐藏边框 */
+}
+#recvBtn[state='normal']{
+   background: #f0f0f0;
+   color: #2cb46e;
+   font-size: 16px; /* 设置字体大小 */
+   font-family: "Microsoft YaHei"; /* 设置字体 */
+   border-radius: 20px; /* 设置圆角 */
+}
+
+#recvBtn[state='hover']{
+   background: #d2d2d2;
+   color: #2cb46e;
+   font-size: 16px; /* 设置字体大小 */
+   font-family: "Microsoft YaHei"; /* 设置字体 */
+   border-radius: 20px; /* 设置圆角 */
+}
+
+#recvBtn[state='press']{
+   background: #c6c6c6;
+   color: #2cb46e;
+   font-size: 16px; /* 设置字体大小 */
+   font-family: "Microsoft YaHei"; /* 设置字体 */
+   border-radius: 20px; /* 设置圆角 */
+}
+
+#sendBtn[state='normal']{
+    background: #f0f0f0;
+    color: #2cb46e;
+    font-size: 16px; /* 设置字体大小 */
+    font-family: "Microsoft YaHei"; /* 设置字体 */
+    border-radius: 20px; /* 设置圆角 */
+}
+
+#sendBtn[state='hover']{
+   background: #d2d2d2;
+   color: #2cb46e;
+   font-size: 16px; /* 设置字体大小 */
+   font-family: "Microsoft YaHei"; /* 设置字体 */
+   border-radius: 20px; /* 设置圆角 */
+}
+
+#sendBtn[state='press']{
+   background: #c6c6c6;
+   color: #2cb46e;
+   font-size: 16px; /* 设置字体大小 */
+   font-family: "Microsoft YaHei"; /* 设置字体 */
+   border-radius: 20px; /* 设置圆角 */
+}
+
+#toolWidget{
+    background: #ffffff;
+    border-bottom: 0.5px solid #ececec; /* 设置下边框颜色和宽度 */
+}
+
+#emoLabel[state='normal']{
+    border-image: url(:/res/smile.png);
+}
+
+#emoLabel[state='hover']{
+    border-image: url(:/res/smile_hover.png);
+}
+
+#emoLabel[state='press']{
+    border-image: url(:/res/smile_press.png);
+}
+
+#fileLabel[state='normal']{
+    border-image: url(:/res/filedir.png);
+}
+
+#fileLabel[state='hover']{
+    border-image: url(:/res/filedir_hover.png);
+}
+
+#fileLabel[state='press']{
+    border-image: url(:/res/filedir_press.png);
+}
+#chatDataList{
+     background: black;
+}
+
+#chat_bg{
+    background: #f0f0f0;
+}
+
+#chat_area{
+    border: none;
+}
+#chat_user_name{
+    color:rgb(153,153,153);
+    font-size: 14px;
+    font-family: "Microsoft YaHei";
+}
+
+
+

@@ -1,0 +1,16 @@
+{
+    "email":{
+        "user":"lzm_work@foxmail.com",
+        "pass":"doplmjthivmxdgei"
+    },
+    "mysql":{
+        "host":"localhost",
+        "port":3306,
+        "passwd":"6204222lL@"
+    },
+    "redis":{
+        "host":"127.0.0.1",
+        "port":6379,
+        "passwd":"6204222lL@"
+    }
+}

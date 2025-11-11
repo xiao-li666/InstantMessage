@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1020</width>
+    <width>1140</width>
     <height>900</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>30</width>
+    <height>30</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -78,55 +90,17 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="sideChatLabel">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="sideContactLabel">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="sideHeadLabel">
            <property name="minimumSize">
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>35</width>
+             <height>35</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>35</width>
+             <height>35</height>
             </size>
            </property>
            <property name="text">
@@ -135,7 +109,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="sideChatLabel_4">
+          <widget class="StateWidget" name="sideChatLabel" native="true">
            <property name="minimumSize">
             <size>
              <width>30</width>
@@ -148,8 +122,21 @@
              <height>30</height>
             </size>
            </property>
-           <property name="text">
-            <string/>
+          </widget>
+         </item>
+         <item>
+          <widget class="StateWidget" name="sideContactLabel" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -271,7 +258,7 @@
        <widget class="ChatUserList" name="chatUserList"/>
       </item>
       <item>
-       <widget class="QListView" name="searchUserList"/>
+       <widget class="SearchList" name="searchUserList"/>
       </item>
       <item>
        <widget class="QListWidget" name="conUserList"/>
@@ -308,6 +295,17 @@
    <extends>QWidget</extends>
    <header location="global">chatpage.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StateWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">statewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SearchList</class>
+   <extends>QListView</extends>
+   <header location="global">searchlist.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

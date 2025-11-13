@@ -18,7 +18,7 @@ public:
     ~FindSuccessDlg();
     void SetSearchInfo(std::shared_ptr<SearchInfo> si);
 private slots:
-    void on_add_friend_btn_clicked();
+    void on_addFriendBtn_clicked();
 
 private:
     Ui::FindSuccessDlg *ui;

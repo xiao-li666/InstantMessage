@@ -14,6 +14,7 @@ CONFIG += c++17
 SOURCES += \
     BubbleFrame.cpp \
     adduseritem.cpp \
+    applyfriend.cpp \
     chatdialog.cpp \
     chatitembase.cpp \
     chatpage.cpp \
@@ -22,9 +23,14 @@ SOURCES += \
     chatview.cpp \
     clickbtn.cpp \
     clickedlabel.cpp \
+    clickedoncelabel.cpp \
+    contactuserlist.cpp \
+    conuseritem.cpp \
     customizeedit.cpp \
     findsuccessdlg.cpp \
+    friendlabel.cpp \
     global.cpp \
+    grouptipitem.cpp \
     httpmgr.cpp \
     listitembase.cpp \
     loadingdlg.cpp \
@@ -46,6 +52,7 @@ SOURCES += \
 HEADERS += \
     BubbleFrame.h \
     adduseritem.h \
+    applyfriend.h \
     chatdialog.h \
     chatitembase.h \
     chatpage.h \
@@ -54,9 +61,14 @@ HEADERS += \
     chatview.h \
     clickbtn.h \
     clickedlabel.h \
+    clickedoncelabel.h \
+    contactuserlist.h \
+    conuseritem.h \
     customizeedit.h \
     findsuccessdlg.h \
+    friendlabel.h \
     global.h \
+    grouptipitem.h \
     httpmgr.h \
     listitembase.h \
     loadingdlg.h \
@@ -77,10 +89,14 @@ HEADERS += \
 
 FORMS += \
     adduseritem.ui \
+    applyfriend.ui \
     chatdialog.ui \
     chatpage.ui \
     chatuserwid.ui \
+    conuseritem.ui \
     findsuccessdlg.ui \
+    friendlabel.ui \
+    grouptipitem.ui \
     loadingdlg.ui \
     logindialog.ui \
     mainwindow.ui \

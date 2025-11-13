@@ -1,10 +1,11 @@
 #include "findsuccessdlg.h"
 #include "ui_findsuccessdlg.h"
 #include <QDir>
+#include "applyfriend.h"
 
 FindSuccessDlg::FindSuccessDlg(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::FindSuccessDlg)
+    , ui(new Ui::FindSuccessDlg),_parent(parent)
 {
     ui->setupUi(this);
 
@@ -36,7 +37,12 @@ void FindSuccessDlg::SetSearchInfo(std::shared_ptr<SearchInfo> si)
     _si = si;
 }
 
-void FindSuccessDlg::on_add_friend_btn_clicked()
+void FindSuccessDlg::on_addFriendBtn_clicked()
 {
+    this->hide();
 
+    auto applyFriend = new ApplyFriend(_parent);
+    applyFriend->SetSearchInfo(_si);
+    applyFriend->setModal(true);
+    applyFriend->show();
 }

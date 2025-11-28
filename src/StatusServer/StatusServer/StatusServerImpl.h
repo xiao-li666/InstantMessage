@@ -21,7 +21,7 @@ struct ChatServer {
 	std::string host;
 	std::string port;
 	std::string name;
-	int con_count; //用来记录当前服务器的连接数量
+	int con_count;
 };
 
 class StatusServerImpl final : public StatusService::Service
@@ -40,7 +40,5 @@ private:
 	ChatServer getChatServer();
 	std::unordered_map<std::string, ChatServer> _servers;
 	std::mutex _server_mtx;
-	std::unordered_map<int, std::string> _tokens;
-	std::mutex _token_mtx;
 };
 

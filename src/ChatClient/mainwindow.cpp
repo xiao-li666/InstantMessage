@@ -8,17 +8,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     /*-------------------------------------------------------------------------------*/
-    _chatDlg = new ChatDialog(this);
-    _chatDlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
-    setCentralWidget(_chatDlg);
-    _chatDlg->show();
-    this->setMinimumSize(QSize(1300,900));
-    this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
+    // _chatDlg = new ChatDialog(this);
+    // _chatDlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    // setCentralWidget(_chatDlg);
+    // _chatDlg->show();
+    // this->setMinimumSize(QSize(1300,900));
+    // this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
     /*-------------------------------------------------------------------------------*/
-    // _loginDlg = new LoginDialog(this);
-    // _loginDlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
-    // setCentralWidget(_loginDlg);
-    // _loginDlg->show();
+    _loginDlg = new LoginDialog(this);
+    _loginDlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    setCentralWidget(_loginDlg);
+    _loginDlg->show();
     //创建注册消息链接，跳转界面
     connect(_loginDlg, &LoginDialog::switchRegister, this, &MainWindow::SlotSwitchReg);
     connect(_loginDlg, &LoginDialog::switchreset,this,&MainWindow::SlotSwitchResetPass);
@@ -86,7 +86,7 @@ void MainWindow::SlotSwitchResetPass()
 
 void MainWindow::SlotSwitchChatDlg()
 {
-    _chatDlg = new ChatDialog(this);
+    _chatDlg = new ChatDialog();
     _chatDlg->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     setCentralWidget(_chatDlg);
     _chatDlg->show();

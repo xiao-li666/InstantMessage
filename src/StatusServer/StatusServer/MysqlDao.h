@@ -61,7 +61,7 @@ public:
                 std::unique_ptr<sql::Statement> stmt(con->_conn->createStatement());
                 stmt->executeQuery("SELECT 1");
                 con->_last_oper_time = timestamp;
-                std::cout << "execute timer alive query, cur is " << timestamp << std::endl;
+                //std::cout << "execute timer alive query, cur is " << timestamp << std::endl;
             }
             catch (sql::SQLException& ec) {
                 std::cout << "Error keeping connection alive" << ec.what() << std::endl;

@@ -123,6 +123,11 @@ bool MysqlDao::selectPwd(const std::string& email, UserInfo& userInfo)
             userInfo.email = res->getString("email");
             userInfo.name = res->getString("name");
             userInfo.uid = res->getInt("uid");
+			userInfo.nick = res->getString("nick");
+			//userInfo.back = res->getString("back");
+			userInfo.desc = res->getString("desc");
+			userInfo.icon = res->getString("icon");
+			userInfo.sex = res->getInt("sex");
             std::cout << "select pwd is " << userInfo.pwd << std::endl;
         }
         else {

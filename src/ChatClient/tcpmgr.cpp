@@ -75,6 +75,7 @@ void TcpMgr::InitHandlers()
             qDebug() << "failed to create QjsonDocument";
             return;
         }
+        qDebug() << "success parase jsoon";
         QJsonObject jsonObj = jsonDoc.object();
         if(!jsonObj.contains("error")){
             int err = ErrorCodes::ERR_JSON;
@@ -87,9 +88,17 @@ void TcpMgr::InitHandlers()
             emit sig_login_failed(err);
             return;
         }
-        UserMgr::GetInstance()->SetName(jsonObj["name"].toString());
-        UserMgr::GetInstance()->SetToken(jsonObj["token"].toString());
-        UserMgr::GetInstance()->SetUid(jsonObj["uid"].toInt());
+        qDebug() << "start set userinfo";
+        auto uid = jsonObj["uid"].toInt();
+        auto name = jsonObj["name"].toString();
+        auto nick = jsonObj["nick"].toString();
+        auto icon = jsonObj["icon"].toString();
+        auto sex = jsonObj["sex"].toInt();
+        auto desc = jsonObj["desc"].toString();
+        auto user_info = std::make_shared<UserInfo>(uid, name, nick, icon, sex,"",desc);
+
+        UserMgr::GetInstance()->SetUserInfo(user_info);
+        qDebug() << "success send signals sig_switch_chatdlg";
         emit sig_switch_chatdlg();
     });
 }

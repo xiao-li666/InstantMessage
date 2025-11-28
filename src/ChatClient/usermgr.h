@@ -5,18 +5,20 @@
 #include <singleton.h>
 #include "userdata.h"
 
-class UserMgr : public QObject ,public Singleton<UserMgr>
+class UserMgr : public QObject ,public Singleton<UserMgr>, public std::enable_shared_from_this<UserMgr>
 {
     Q_OBJECT
 public:
     friend class Singleton<UserMgr>;
     ~UserMgr();
-    void SetName(QString name);
+    //void SetName(QString name);
     QString GetName();
     void SetUid(int uid);
     int GetUid();
     void SetToken(QString token);
+    void SetUserInfo(std::shared_ptr<UserInfo> userinfo);
 
+    std::vector<std::shared_ptr<ApplyInfo>> GetApplyList();
     std::vector<std::shared_ptr<FriendInfo>> GetConListPerPage();
     void UpdateContactLoadedCount();
 

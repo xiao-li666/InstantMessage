@@ -30,7 +30,7 @@
 #include <jdbc/cppconn/statement.h>
 #include <jdbc/cppconn/exception.h>
 
-const std::string KEYPRE = "code_";
+//const std::string KEYPRE = "code_";
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -63,3 +63,9 @@ public:
 private:
 	std::function<void()> func_;
 };
+
+#define USERIPPREFIX "uip_"
+#define USERTOKENPREFIX "utoken_"
+#define IPCOUNTPREFIX "ipcount_"
+#define USER_BASE_INFO "ubaseinfo_"
+#define LOGIN_COUNT "logincount"

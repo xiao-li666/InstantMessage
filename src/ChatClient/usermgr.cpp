@@ -6,11 +6,6 @@ UserMgr::~UserMgr()
 
 }
 
-void UserMgr::SetName(QString name)
-{
-    _user_info->_name = name;
-}
-
 QString UserMgr::GetName()
 {
     return _user_info->_name;
@@ -29,6 +24,16 @@ int UserMgr::GetUid()
 void UserMgr::SetToken(QString token)
 {
     _token = token;
+}
+
+void UserMgr::SetUserInfo(std::shared_ptr<UserInfo> userinfo)
+{
+    _user_info = userinfo;
+}
+
+std::vector<std::shared_ptr<ApplyInfo> > UserMgr::GetApplyList()
+{
+    return _apply_list;
 }
 
 std::vector<std::shared_ptr<FriendInfo> > UserMgr::GetConListPerPage()

@@ -187,7 +187,7 @@ void ChatDialog::slot_side_chat()
 void ChatDialog::slot_side_contact()
 {
     ClearLabelState(ui->sideContactLabel);
-    ui->stackedWidget->setCurrentWidget(ui->sideContactLabel);
+    ui->stackedWidget->setCurrentWidget(ui->friendApplyPage);
     _state = ChatUIMode::ContactMode;
     showSearch(false);
 }

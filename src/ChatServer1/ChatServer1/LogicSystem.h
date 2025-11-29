@@ -24,8 +24,13 @@ private:
 	void DealMsg();
 	void RegisterCallBacks();
 	void LoginHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data);
+	void SearchUserHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data);
+	void AddFriendApplyHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data);
 
 	bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo);
+	bool GetUserByName(std::string name, std::shared_ptr<UserInfo>& userinfo);
+	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÈ«ÎªÊý×Ö
+	bool isPureDigit(const std::string& str);
 
 	bool _b_stop;
 

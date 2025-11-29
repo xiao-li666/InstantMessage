@@ -69,6 +69,10 @@ void LogicSystem::RegisterCallBacks()
 {
 	_funCallBacks[ID_CHAT_LOGIN] = std::bind(&LogicSystem::LoginHandler, this,
 		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	_funCallBacks[ID_SEARCH_USER_REQ] = std::bind(&LogicSystem::SearchUserHandler, this,
+		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	_funCallBacks[ID_ADD_FRIEND_REQ] = std::bind(&LogicSystem::AddFriendApplyHandler, this,
+		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 }
 
 void LogicSystem::LoginHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
@@ -150,6 +154,54 @@ void LogicSystem::LoginHandler(std::shared_ptr<CSession> session, const size_t& 
 	return;
 }
 
+void LogicSystem::SearchUserHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
+{
+	Json::Reader reader;
+	Json::Value root;
+	reader.parse(msg_data, root);
+	auto uid = root["uid"].asString();
+	std::cout << "search user uid is  " << uid << std::endl;
+	Json::Value rtvalue;
+
+	Defer deder([this, session, &rtvalue]() {
+		std::string returnStr = rtvalue.toStyledString();
+		session->Send(returnStr, ID_SEARCH_USER_RSP);
+		});
+
+	std::shared_ptr<UserInfo> user_info = std::make_shared<UserInfo>();
+	if (!isPureDigit(uid)) {
+		//uid不是纯数字，说明是email
+		if (!GetUserByName(uid, user_info)) {
+			//没有查询到用户信息
+			rtvalue["error"] = ErrorCodes::UserNoExits;
+			return;
+		}
+	}
+	else {
+		int search_uid = std::stoi(uid);
+		//查询用户信息
+		std::string baseKey = USER_BASE_INFO + uid;
+		if (!GetBaseInfo(baseKey, search_uid, user_info)) {
+			//没有查询到用户信息
+			rtvalue["error"] = ErrorCodes::UserNoExits;
+			return;
+		}
+	}
+	rtvalue["error"] = ErrorCodes::Success;
+	rtvalue["uid"] = user_info->uid;
+	rtvalue["name"] = user_info->name;
+	rtvalue["nick"] = user_info->nick;
+	rtvalue["desc"] = user_info->desc;
+	rtvalue["sex"] = user_info->sex;
+	rtvalue["icon"] = user_info->icon;
+	return;
+}
+
+void LogicSystem::AddFriendApplyHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
+{
+
+}
+
 bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo)
 {
 	//先查找redis,redis中没有查到，再查mysql，查到后存入redis
@@ -189,6 +241,26 @@ bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<Use
 		root["sex"] = userinfo->sex;
 		root["icon"] = userinfo->icon;
 		RedisMgr::GetInstance()->Set(base_key, root.toStyledString());
+	}
+	return true;
+}
+
+bool LogicSystem::GetUserByName(std::string name, std::shared_ptr<UserInfo>& userinfo)
+{
+	//直接在mysql中查找
+	userinfo = MysqlMgr::GetInstance()->GetUser(name);
+	if (userinfo == nullptr) {
+		return false;
+	}
+	return true;
+}
+
+bool LogicSystem::isPureDigit(const std::string& str)
+{
+	for (char c : str) {
+		if (!isdigit(c)) {
+			return false;
+		}
 	}
 	return true;
 }

@@ -137,6 +137,7 @@ public:
     bool updatePwd(const std::string& email, const std::string& newPwd);
     bool selectPwd(const std::string& email,UserInfo& userInfo);
     std::shared_ptr<UserInfo> GetUser(int uid);
+    std::shared_ptr<UserInfo> GetUser(const std::string& name);
 
 private:
     std::unique_ptr<MySqlPool> pool_;

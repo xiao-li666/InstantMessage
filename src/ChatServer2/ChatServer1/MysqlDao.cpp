@@ -184,3 +184,37 @@ std::shared_ptr<UserInfo> MysqlDao::GetUser(int uid)
     }
     return nullptr;
 }
+
+std::shared_ptr<UserInfo> MysqlDao::GetUser(const std::string& email)
+{
+    auto con = pool_->getConnection();
+	if (con == nullptr) {
+		return nullptr;
+	}
+    Defer defer([this, &con]() {
+        pool_->returnConnection(std::move(con));
+        });
+
+	std::shared_ptr<UserInfo> userInfo = std::make_shared<UserInfo>();
+    try {
+		std::unique_ptr<sql::PreparedStatement> stmt(con->_conn->prepareStatement("SELECT * FROM user WHERE email=?"));
+		stmt->setString(1, email);
+		std::unique_ptr<sql::ResultSet> res(stmt->executeQuery());
+        if (res->next()) {
+            userInfo->name = res->getString("name");
+            userInfo->uid = res->getInt("uid");
+            userInfo->nick = res->getString("nick");
+            userInfo->desc = res->getString("desc");
+            userInfo->icon = res->getString("icon");
+            userInfo->sex = res->getInt("sex");
+        }
+        return userInfo;
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQLException: " << e.what();
+        std::cerr << " (MySQL error code: " << e.getErrorCode();
+        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+        return nullptr;
+    }
+	return nullptr;
+}

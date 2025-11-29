@@ -14,7 +14,7 @@ ChatDialog::ChatDialog(QWidget *parent)
 {
     ui->setupUi(this);
     ui->addBtn->SetState("normal","hover","press");
-    ui->searchEdit->SetMaxLength(15);
+    ui->searchEdit->SetMaxLength(25);
 
     QAction *searchAction = new QAction(ui->searchEdit);
     searchAction->setIcon(QIcon(":/res/search.png"));
@@ -71,6 +71,9 @@ ChatDialog::ChatDialog(QWidget *parent)
     this->installEventFilter(this); //安装事件过滤器
 
     ui->sideChatLabel->SetSelected(true);
+
+    //为searchlist设置searchedit
+    ui->searchUserList->SetSearchEdit(ui->searchEdit);
 }
 
 ChatDialog::~ChatDialog()

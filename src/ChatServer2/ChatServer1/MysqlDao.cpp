@@ -144,6 +144,36 @@ bool MysqlDao::selectPwd(const std::string& email, UserInfo& userInfo)
     return true;
 }
 
+bool MysqlDao::AddFriendApply(const int& from, const int& to)
+{
+	auto con = pool_->getConnection();
+    if (con == nullptr) {
+        return false;
+    }
+	Defer defer([this, &con]() {
+		pool_->returnConnection(std::move(con));
+		});
+    try {
+        std::unique_ptr<sql::PreparedStatement> pstmt(con->_conn->prepareStatement("INSERT INTO friend_apply (from_uid,to_uid) VALUES (?,?) "
+            "ON DUPLICATE KEY UPDATE from_uid = from_uid, to_uid = to_uid"));
+		pstmt->setInt(1, from);
+		pstmt->setInt(2, to);
+		int updateCount = pstmt->executeUpdate();
+		std::cout << "insert friend apply rows is " << updateCount << std::endl;
+        if (updateCount < 0) {
+			return false;
+        }
+        return true;
+    }
+    catch(sql::SQLException &e){
+        std::cerr << "SQLException: " << e.what();
+        std::cerr << " (MySQL error code: " << e.getErrorCode();
+        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+        return false;
+    }
+    return false;
+}
+
 std::shared_ptr<UserInfo> MysqlDao::GetUser(int uid)
 {
     auto con = pool_->getConnection();
@@ -188,18 +218,18 @@ std::shared_ptr<UserInfo> MysqlDao::GetUser(int uid)
 std::shared_ptr<UserInfo> MysqlDao::GetUser(const std::string& email)
 {
     auto con = pool_->getConnection();
-	if (con == nullptr) {
-		return nullptr;
-	}
+    if (con == nullptr) {
+        return nullptr;
+    }
     Defer defer([this, &con]() {
         pool_->returnConnection(std::move(con));
         });
 
-	std::shared_ptr<UserInfo> userInfo = std::make_shared<UserInfo>();
+    std::shared_ptr<UserInfo> userInfo = std::make_shared<UserInfo>();
     try {
-		std::unique_ptr<sql::PreparedStatement> stmt(con->_conn->prepareStatement("SELECT * FROM user WHERE email=?"));
-		stmt->setString(1, email);
-		std::unique_ptr<sql::ResultSet> res(stmt->executeQuery());
+        std::unique_ptr<sql::PreparedStatement> stmt(con->_conn->prepareStatement("SELECT * FROM user WHERE email=?"));
+        stmt->setString(1, email);
+        std::unique_ptr<sql::ResultSet> res(stmt->executeQuery());
         if (res->next()) {
             userInfo->name = res->getString("name");
             userInfo->uid = res->getInt("uid");
@@ -216,5 +246,5 @@ std::shared_ptr<UserInfo> MysqlDao::GetUser(const std::string& email)
         std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
         return nullptr;
     }
-	return nullptr;
+    return nullptr;
 }

@@ -210,15 +210,15 @@ bool RedisMgr::HDel(const std::string& key, const std::string& hkey)
     auto connect = _connPool->getConnection();
     if (connect == nullptr) {
         return false;
-    }
+	}
 	auto reply = (redisReply*)redisCommand(connect, "HDEL %s %s", key.c_str(), hkey.c_str());
 	if (reply == nullptr || reply->type != REDIS_REPLY_INTEGER) {
-		std::cout << "Execut command [ HDel " << key << "  " << hkey << " ] failure ! " << std::endl;
+		std::cout << "Execut command [ HDel " << key << " " << hkey << " ] failure ! " << std::endl;
 		freeReplyObject(reply);
 		_connPool->returnConnection(connect);
 		return false;
 	}
-	std::cout << "Execut command [ HDel " << key << "  " << hkey << " ] success ! " << std::endl;
+	std::cout << "Execut command [ HDel " << key << " " << hkey << " ] success ! " << std::endl;
 	freeReplyObject(reply);
 	_connPool->returnConnection(connect);
 	return true;

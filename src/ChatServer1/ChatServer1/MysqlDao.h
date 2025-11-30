@@ -136,6 +136,7 @@ public:
     bool checkEmail(const std::string& name, const std::string& email);
     bool updatePwd(const std::string& email, const std::string& newPwd);
     bool selectPwd(const std::string& email,UserInfo& userInfo);
+    bool AddFriendApply(const int& from, const int& to);
     std::shared_ptr<UserInfo> GetUser(int uid);
     std::shared_ptr<UserInfo> GetUser(const std::string &name);
 

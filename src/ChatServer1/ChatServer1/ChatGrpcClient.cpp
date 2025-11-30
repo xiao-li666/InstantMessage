@@ -60,14 +60,14 @@ ChatGrpcClient::~ChatGrpcClient()
 ChatGrpcClient::ChatGrpcClient()
 {
 	auto& config = ConfigMgr::GetInstance();
-	auto server_list = config["PeerChatServer"]["Servers"];
+	auto server_list = config["PeerServer"]["Servers"];
 
 	std::vector<std::string> words;
 
 	std::stringstream ss(server_list);
 	std::string word;
 
-	while (std::getline(ss, word, ';')) {
+	while (std::getline(ss, word, ',')) {
 		words.push_back(word);
 	}
 
@@ -86,7 +86,35 @@ ChatGrpcClient::ChatGrpcClient()
 
 AddFriendRsp ChatGrpcClient::NotifyAddFriend(std::string server_ip, const AddFriendReq& req)
 {
-	return AddFriendRsp();
+	AddFriendRsp rsp;
+	Defer defer([this, &rsp, &req]() {
+		rsp.set_error(ErrorCodes::Success);
+		rsp.set_applyuid(req.applyuid());
+		rsp.set_touid(req.touid());
+		});
+
+	auto iter = _pools.find(server_ip);
+	if (iter == _pools.end()) {
+		std::cout << "ChatGrpcClient::NotifyAddFriend not found server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	auto conn = iter->second->getConnection();
+	if (conn == nullptr) {
+		std::cout << "ChatGrpcClient::NotifyAddFriend getConnection failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	ClientContext context;
+	Status status = conn->NotifyAddFriend(&context, req, &rsp);
+	iter->second->returnConnection(std::move(conn));
+	if (!status.ok()) {
+		std::cout << "ChatGrpcClient::NotifyAddFriend rpc failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	std::cout << "ChatGrpcClient::NotifyAddFriend rpc success for server ip " << server_ip << std::endl;
+	return rsp;
 }
 
 AuthFriendRsp ChatGrpcClient::NotifyAuthFriend(std::string server_ip, const AuthFriendReq& req)

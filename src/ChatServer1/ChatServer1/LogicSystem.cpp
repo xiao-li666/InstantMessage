@@ -199,7 +199,65 @@ void LogicSystem::SearchUserHandler(std::shared_ptr<CSession> session, const siz
 
 void LogicSystem::AddFriendApplyHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
 {
+	Json::Reader reader;
+	Json::Value root;
+	reader.parse(msg_data, root);
+	auto from_uid = root["uid"].asInt();
+	auto to_uid = root["touid"].asInt();
+	auto applyName = root["applyname"].asString();
+	std::cout << "add friend apply from uid is  " << from_uid << " to uid is " << to_uid << std::endl;
 
+	Json::Value rtvalue;
+	rtvalue["error"] = ErrorCodes::Success;
+	Defer defer([this, &rtvalue, session]() {
+		std::string return_str = rtvalue.toStyledString();
+		session->Send(return_str, ID_ADD_FRIEND_RSP);
+		});
+
+	//先更新数据库
+	MysqlMgr::GetInstance()->AddFriendApply(from_uid, to_uid);
+
+	//查询redis中to_uid所在的服务器ip
+	std::string to_ip_key = USERIPPREFIX + std::to_string(to_uid);
+	std::string to_ip_value = "";
+	if (!RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value)) {
+		//没有查询到，说明不在线，直接返回成功
+		std::cout << "to uid " << to_uid << " not online" << std::endl;
+		return;
+	}
+	//通知对应的服务器，有好友申请
+	auto& conf = ConfigMgr::GetInstance();
+	auto self_server_name = conf["SelfServer"]["Name"];
+	if (to_ip_value == self_server_name) {
+		auto session = UserMgr::GetInstance()->GetUserSession(to_uid);
+		//在同一个服务器
+		if (session) {
+			Json::Value notifyValue;
+			notifyValue["error"] = ErrorCodes::Success;
+			notifyValue["applyuid"] = from_uid;
+			notifyValue["name"] = applyName;
+			notifyValue["desc"] = "";
+			std::string notifyStr = notifyValue.toStyledString();
+			session->Send(notifyStr, ID_NOTIFY_ADD_FRIEND_REQ);
+		}
+		return;
+	}
+	//不在同一个服务器，通知对应的服务器
+	std::string base_key = USER_BASE_INFO + std::to_string(from_uid);
+	auto applyUserInfo = std::make_shared<UserInfo>();
+	bool b_info = GetBaseInfo(base_key, from_uid, applyUserInfo);
+	AddFriendReq req;
+	req.set_touid(to_uid);
+	req.set_applyuid(from_uid);
+	req.set_name(applyName);
+	req.set_desc("");
+	if (b_info) {
+		req.set_icon(applyUserInfo->icon);
+		req.set_nick(applyUserInfo->nick);
+		req.set_sex(applyUserInfo->sex);
+	}
+
+	ChatGrpcClient::GetInstance()->NotifyAddFriend(to_ip_value, req);
 }
 
 bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo)

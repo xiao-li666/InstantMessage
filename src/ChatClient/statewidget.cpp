@@ -151,7 +151,7 @@ void StateWidget::SetSelected(bool bselected)
 void StateWidget::AddRedPoint()
 {
     _redPoint = new QLabel();
-    _redPoint->setObjectName("red_point");
+    _redPoint->setObjectName("redPoint");
     QVBoxLayout* layout2 = new QVBoxLayout();
     _redPoint->setAlignment(Qt::AlignCenter);
     layout2->addWidget(_redPoint);

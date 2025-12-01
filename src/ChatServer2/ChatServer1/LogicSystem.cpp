@@ -128,7 +128,21 @@ void LogicSystem::LoginHandler(std::shared_ptr<CSession> session, const size_t& 
 	rtvalue["icon"] = user_info->icon;
 
 	//获取申请好友列表
-	
+	std::vector<std::shared_ptr<ApplyInfo>> applyInfos;
+	auto b_apply = GetFriendApplyInfo(uid, applyInfos);
+	if (b_apply) {
+		for (auto& apply : applyInfos) {
+			Json::Value obj;
+			obj["uid"] = apply->_uid;
+			obj["name"] = apply->_name;
+			obj["nick"] = apply->_nick;
+			obj["desc"] = apply->_desc;
+			obj["sex"] = apply->_sex;
+			obj["status"] = apply->_status;
+			obj["icon"] = apply->_icon;
+			rtvalue["apply_list"].append(obj);
+		}
+	}
 	//从数据库中获取用户的好友列表，群组列表等信息，后续再添加
 
 	//登录成功后，更新该服务器的在线用户数量
@@ -311,6 +325,11 @@ bool LogicSystem::GetUserByName(std::string name, std::shared_ptr<UserInfo>& use
 		return false;
 	}
 	return true;
+}
+
+bool LogicSystem::GetFriendApplyInfo(int uid, std::vector<std::shared_ptr<ApplyInfo>>& applyInfos)
+{
+	return MysqlMgr::GetInstance()->GetApplyList(uid,applyInfos, 0, 10);
 }
 
 bool LogicSystem::isPureDigit(const std::string& str)

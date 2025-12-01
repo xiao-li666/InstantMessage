@@ -10,6 +10,7 @@
 #include <json/value.h>
 #include <json/reader.h>
 #include <unordered_map>
+struct ApplyInfo;
 struct UserInfo;
 class CServer;
 typedef std::function<void(std::shared_ptr<CSession>, const size_t& msgId, const std::string& msgData)> FunCallBack;
@@ -29,6 +30,7 @@ private:
 
 	bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo);
 	bool GetUserByName(std::string name, std::shared_ptr<UserInfo>& userinfo);
+	bool GetFriendApplyInfo(int uid, std::vector<std::shared_ptr<ApplyInfo>>& applyInfos);
 	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÈ«ÎªÊý×Ö
 	bool isPureDigit(const std::string& str);
 

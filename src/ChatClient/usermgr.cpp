@@ -73,6 +73,21 @@ void UserMgr::UpdateContactLoadedCount()
     _contact_loaded = end;
 }
 
+void UserMgr::AppendApplyList(QJsonArray array)
+{
+    for(const QJsonValue &value : array){
+        auto name = value["name"].toString();
+        auto desc = value["desc"].toString();
+        auto icon = value["icon"].toString();
+        auto nick = value["nick"].toString();
+        auto sex = value["sex"].toInt();
+        auto uid = value["uid"].toInt();
+        auto status = value["status"].toInt();
+        auto info = std::make_shared<ApplyInfo>(uid, name, desc, icon, nick, sex, status);
+        _apply_list.push_back(info);
+    }
+}
+
 bool UserMgr::IsLoadConFin()
 {
     if (_contact_loaded >= _friend_list.size()) {
@@ -99,5 +114,29 @@ bool UserMgr::CheckFriendById(int uid)
     }
 
     return true;
+}
+
+bool UserMgr::AlreadyApply(int uid)
+{
+    for(auto&apply : _apply_list){
+        if(apply->_uid == uid)return true;
+    }
+    //_apply_list.emplace_back(uid);
+    return false;
+}
+
+void UserMgr::SetApply(std::shared_ptr<ApplyInfo> apply)
+{
+    _apply_list.push_back(apply);
+}
+
+void UserMgr::DelApply(std::shared_ptr<ApplyInfo> apply)
+{
+    for(auto it = _apply_list.begin(); it != _apply_list.end(); it++){
+        if((*it)->_uid == apply->_uid){
+            _apply_list.erase(it);
+            return;
+        }
+    }
 }
 

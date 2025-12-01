@@ -22,10 +22,15 @@ public:
     std::vector<std::shared_ptr<FriendInfo>> GetConListPerPage();
     void UpdateContactLoadedCount();
 
+    void AppendApplyList(QJsonArray array);
+
     bool IsLoadConFin();
     bool IsLoadChatFin();
 
     bool CheckFriendById(int uid);
+    bool AlreadyApply(int uid);
+    void SetApply(std::shared_ptr<ApplyInfo>);
+    void DelApply(std::shared_ptr<ApplyInfo>);
 private:
     UserMgr();
     std::shared_ptr<UserInfo> _user_info;

@@ -174,6 +174,44 @@ bool MysqlDao::AddFriendApply(const int& from, const int& to)
     return false;
 }
 
+bool MysqlDao::GetApplyList(int touid, std::vector<std::shared_ptr<ApplyInfo>>& applyList, int begin, int limit)
+{
+    auto con = pool_->getConnection();
+	if (con == nullptr) {
+		return false;
+	}
+    Defer defer([this,&con]() {
+        pool_->returnConnection(std::move(con));
+        });
+    try {
+        std::unique_ptr<sql::PreparedStatement> pstmt(con->_conn->prepareStatement("SELECT apply.from_uid, apply.status, user.name, "
+        "user.nick, user.sex FROM friend_apply as apply join user ON apply.from_uid=user.uid WHERE apply.to_uid = ?"
+        " AND apply.id > ? ORDER BY apply.id ASC LIMIT ? "));
+		pstmt->setInt(1, touid);
+		pstmt->setInt(2, begin);
+		pstmt->setInt(3, limit);
+
+		std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        while (res->next()) {
+			auto name = res->getString("name");
+            auto uid = res->getInt("from_uid");
+            auto status = res->getInt("status");
+            auto nick = res->getString("nick");
+            auto sex = res->getInt("sex");
+			auto apply_ptr = std::make_shared<ApplyInfo>(uid, name, "", "", nick, sex, status);
+            applyList.push_back(apply_ptr);
+        }
+        return true;
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQLException: " << e.what();
+        std::cerr << " (MySQL error code: " << e.getErrorCode();
+        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+        return false;
+    }
+    return false;
+}
+
 std::shared_ptr<UserInfo> MysqlDao::GetUser(int uid)
 {
     auto con = pool_->getConnection();

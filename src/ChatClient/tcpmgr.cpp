@@ -96,8 +96,13 @@ void TcpMgr::InitHandlers()
         auto sex = jsonObj["sex"].toInt();
         auto desc = jsonObj["desc"].toString();
         auto user_info = std::make_shared<UserInfo>(uid, name, nick, icon, sex,"",desc);
-
         UserMgr::GetInstance()->SetUserInfo(user_info);
+        UserMgr::GetInstance()->SetToken(jsonObj["token"].toString());
+
+        if(jsonObj.contains("apply_list")){
+            UserMgr::GetInstance()->AppendApplyList(jsonObj["apply_list"].toArray());
+        }
+
         qDebug() << "success send signals sig_switch_chatdlg";
         emit sig_switch_chatdlg();
     });

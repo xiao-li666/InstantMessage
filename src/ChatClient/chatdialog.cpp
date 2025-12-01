@@ -7,6 +7,8 @@
 #include <QPixmap>
 #include <vector>
 #include "global.h"
+#include "tcpmgr.h"
+#include "usermgr.h"
 
 ChatDialog::ChatDialog(QWidget *parent)
     : QDialog(parent)
@@ -74,6 +76,9 @@ ChatDialog::ChatDialog(QWidget *parent)
 
     //为searchlist设置searchedit
     ui->searchUserList->SetSearchEdit(ui->searchEdit);
+
+    //连接申请添加好友的请求
+    connect(TcpMgr::GetInstance().get(),&TcpMgr::sig_friend_apply,this,&ChatDialog::slot_friend_apply);
 }
 
 ChatDialog::~ChatDialog()
@@ -200,6 +205,20 @@ void ChatDialog::slot_text_changed(const QString &str)
     if(!str.isEmpty()){
         showSearch(true);
     }
+}
+
+void ChatDialog::slot_friend_apply(std::shared_ptr<AddFriendApply> apply)
+{
+    qDebug() << "recv apply friend request, applyuid is" << apply->_from_uid << " name is "<<apply->_name;
+    //判断是否重复申请
+    if(UserMgr::GetInstance()->AlreadyApply(apply->_from_uid)){
+        return;
+    }
+    //添加到申请列表中
+    UserMgr::GetInstance()->SetApply(std::make_shared<ApplyInfo>(apply));
+    ui->sideContactLabel->ShowRedPoint(true);
+    ui->conUserList->ShowRedPoint(true);
+    ui->friendApplyPage->AddNewApply(apply);
 }
 
 

@@ -67,7 +67,7 @@ ChatGrpcClient::ChatGrpcClient()
 	std::stringstream ss(server_list);
 	std::string word;
 
-	while (std::getline(ss, word, ';')) {
+	while (std::getline(ss, word, ',')) {
 		words.push_back(word);
 	}
 
@@ -119,7 +119,34 @@ AddFriendRsp ChatGrpcClient::NotifyAddFriend(std::string server_ip, const AddFri
 
 AuthFriendRsp ChatGrpcClient::NotifyAuthFriend(std::string server_ip, const AuthFriendReq& req)
 {
-	return AuthFriendRsp();
+	AuthFriendRsp rsp;
+	rsp.set_error(ErrorCodes::Success);
+	Defer defer([this, &rsp, &req]() {
+		rsp.set_fromuid(req.fromuid());
+		rsp.set_touid(req.touid());
+		});
+	auto iter = _pools.find(server_ip);
+	if (iter == _pools.end()) {
+		std::cout << "ChatGrpcClient::NotifyAuthFriend not found server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	auto conn = iter->second->getConnection();
+	if (conn == nullptr) {
+		std::cout << "ChatGrpcClient::NotifyAuthFriend getConnection failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	ClientContext context;
+	Status status = conn->NotifyAuthFriend(&context, req, &rsp);
+	iter->second->returnConnection(std::move(conn));
+	if (!status.ok()) {
+		std::cout << "ChatGrpcClient::NotifyAuthFriend rpc failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	std::cout << "ChatGrpcClient::NotifyAuthFriend rpc success for server ip " << server_ip << std::endl;
+	return rsp;
 }
 
 bool ChatGrpcClient::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo)

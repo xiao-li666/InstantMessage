@@ -28,6 +28,9 @@ public:
     bool IsLoadChatFin();
 
     bool CheckFriendById(int uid);
+    void AddFriend(std::shared_ptr<AuthRsp> auth_rsp);
+    void AddFriend(std::shared_ptr<AuthInfo> auth_info);
+    std::shared_ptr<FriendInfo> GetFriendById(int uid);
     bool AlreadyApply(int uid);
     void SetApply(std::shared_ptr<ApplyInfo>);
     void DelApply(std::shared_ptr<ApplyInfo>);

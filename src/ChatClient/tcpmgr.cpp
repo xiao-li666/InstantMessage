@@ -193,6 +193,73 @@ void TcpMgr::InitHandlers()
 
         emit sig_friend_apply(apply_info);
     });
+    _handlers.insert(ID_NOTIFY_AUTH_FRIEND_REQ,[this](ReqId id, int len, QByteArray data){
+        Q_UNUSED(len);
+        qDebug() << "handle id is "<< id << " data is " << data;
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        if(jsonDoc.isNull()){
+            qDebug() << "failed to create QjsonDocument";
+            return;
+        }
+        qDebug() << "success parase jsoon";
+
+        QJsonObject jsonObj = jsonDoc.object();
+        if(!jsonObj.contains("error")){
+            int err = ErrorCodes::ERR_JSON;
+            qDebug() << "ID_NOTIFY_AUTH_FRIEND_REQ failed, err is json Prase err" << err;
+            return;
+        }
+        int err = jsonObj["error"].toInt();
+        if(err != ErrorCodes::SUCCESS){
+            qDebug() << "ID_NOTIFY_AUTH_FRIEND_REQ req send failed";
+            return;
+        }
+
+        int from_uid = jsonObj["fromuid"].toInt();
+        QString name = jsonObj["name"].toString();
+        QString nick = jsonObj["nick"].toString();
+        QString icon = jsonObj["icon"].toString();
+        int sex = jsonObj["sex"].toInt();
+
+        auto auth_info = std::make_shared<AuthInfo>(from_uid, name, nick, icon, sex);
+
+        emit sig_add_auth_friend(auth_info);
+    });
+    _handlers.insert(ID_AUTH_FRIEND_RSP,[this](ReqId id, int len, QByteArray data){
+        Q_UNUSED(len);
+        qDebug() << "handle id is "<< id << " data is " << data;
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        if(jsonDoc.isNull()){
+            qDebug() << "failed to create QjsonDocument";
+            return;
+        }
+        qDebug() << "success parase jsoon";
+
+        QJsonObject jsonObj = jsonDoc.object();
+        if(!jsonObj.contains("error")){
+            int err = ErrorCodes::ERR_JSON;
+            qDebug() << "ID_AUTH_FRIEND_RSP failed, err is json Prase err" << err;
+            return;
+        }
+        int err = jsonObj["error"].toInt();
+        if(err != ErrorCodes::SUCCESS){
+            qDebug() << "ID_AUTH_FRIEND_RSP req send failed";
+            return;
+        }
+
+        QString name = jsonObj["name"].toString();
+        QString nick = jsonObj["nick"].toString();
+        QString icon = jsonObj["icon"].toString();
+        int sex = jsonObj["sex"].toInt();
+        auto uid = jsonObj["uid"].toInt();
+
+        auto rsp = std::make_shared<AuthRsp>(uid, name, nick, icon, sex);
+
+        emit sig_auth_rsp(rsp);
+        qDebug() << "Auth Friend Success";
+    });
 }
 
 void TcpMgr::handleMsg(ReqId id, int len, QByteArray data)

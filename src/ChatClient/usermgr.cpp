@@ -116,6 +116,27 @@ bool UserMgr::CheckFriendById(int uid)
     return true;
 }
 
+void UserMgr::AddFriend(std::shared_ptr<AuthRsp> auth_rsp)
+{
+    auto friend_info = std::make_shared<FriendInfo>(auth_rsp);
+    _friend_map[friend_info->_uid] = friend_info;
+}
+
+void UserMgr::AddFriend(std::shared_ptr<AuthInfo> auth_info)
+{
+    auto friend_info = std::make_shared<FriendInfo>(auth_info);
+    _friend_map[friend_info->_uid] = friend_info;
+}
+
+std::shared_ptr<FriendInfo> UserMgr::GetFriendById(int uid)
+{
+    auto it = _friend_map.find(uid);
+    if(it != _friend_map.end()){
+        return *it;
+    }
+    return nullptr;
+}
+
 bool UserMgr::AlreadyApply(int uid)
 {
     for(auto&apply : _apply_list){

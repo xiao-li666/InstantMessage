@@ -471,7 +471,7 @@ void AuthenFriend::SlotApplySure()
     //发送请求逻辑
     QJsonObject jsonObj;
     auto uid = UserMgr::GetInstance()->GetUid();
-    jsonObj["fromeuid"] = uid;
+    jsonObj["fromuid"] = uid;
     auto name = ui->nameEdit->text();
     if(name.isEmpty()){
         name = ui->nameEdit->placeholderText();

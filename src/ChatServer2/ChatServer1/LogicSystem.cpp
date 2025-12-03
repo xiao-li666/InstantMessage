@@ -146,6 +146,19 @@ void LogicSystem::LoginHandler(std::shared_ptr<CSession> session, const size_t& 
 		}
 	}
 	//从数据库中获取用户的好友列表，群组列表等信息，后续再添加
+	std::vector<std::shared_ptr<UserInfo>> friend_list;
+	bool b_friend_list = GetFriendList(uid, friend_list);
+	for (auto& friend_ele : friend_list) {
+		Json::Value obj;
+		obj["uid"] = friend_ele->uid;
+		obj["name"] = friend_ele->name;
+		obj["nick"] = friend_ele->nick;
+		obj["icon"] = friend_ele->icon;
+		obj["sex"] = friend_ele->sex;
+		obj["desc"] = friend_ele->desc;
+		obj["back"] = friend_ele->back;
+		rtvalue["friend_list"].append(obj);
+	}
 
 	//登录成功后，更新该服务器的在线用户数量
 	auto server_name = ConfigMgr::GetInstance()["SelfServer"]["Name"];
@@ -241,6 +254,9 @@ void LogicSystem::AddFriendApplyHandler(std::shared_ptr<CSession> session, const
 		std::cout << "to uid " << to_uid << " not online" << std::endl;
 		return;
 	}
+	std::string base_key = USER_BASE_INFO + std::to_string(from_uid);
+	auto applyUserInfo = std::make_shared<UserInfo>();
+	bool b_info = GetBaseInfo(base_key, from_uid, applyUserInfo);
 	//通知对应的服务器，有好友申请
 	auto& conf = ConfigMgr::GetInstance();
 	auto self_server_name = conf["SelfServer"]["Name"];
@@ -253,15 +269,17 @@ void LogicSystem::AddFriendApplyHandler(std::shared_ptr<CSession> session, const
 			notifyValue["applyuid"] = from_uid;
 			notifyValue["name"] = applyName;
 			notifyValue["desc"] = "";
+			if (b_info) {
+				notifyValue["icon"] = applyUserInfo->icon;
+				notifyValue["nick"] = applyUserInfo->nick;
+				notifyValue["sex"] = applyUserInfo->sex;
+			}
 			std::string notifyStr = notifyValue.toStyledString();
 			session->Send(notifyStr, ID_NOTIFY_ADD_FRIEND_REQ);
 		}
 		return;
 	}
 	//不在同一个服务器，通知对应的服务器
-	std::string base_key = USER_BASE_INFO + std::to_string(from_uid);
-	auto applyUserInfo = std::make_shared<UserInfo>();
-	bool b_info = GetBaseInfo(base_key, from_uid, applyUserInfo);
 	AddFriendReq req;
 	req.set_touid(to_uid);
 	req.set_applyuid(from_uid);
@@ -415,6 +433,11 @@ bool LogicSystem::GetUserByName(std::string name, std::shared_ptr<UserInfo>& use
 bool LogicSystem::GetFriendApplyInfo(int uid, std::vector<std::shared_ptr<ApplyInfo>>& applyInfos)
 {
 	return MysqlMgr::GetInstance()->GetApplyList(uid,applyInfos, 0, 10);
+}
+
+bool LogicSystem::GetFriendList(int self_uid, std::vector<std::shared_ptr<UserInfo>>& friendList)
+{
+	return MysqlMgr::GetInstance()->GetFriendList(self_uid, friendList);
 }
 
 bool LogicSystem::isPureDigit(const std::string& str)

@@ -35,6 +35,11 @@ void FindSuccessDlg::SetSearchInfo(std::shared_ptr<SearchInfo> si)
 {
     ui->nameLabel->setText(si->_name);
     _si = si;
+    QString pix_path = si->_icon;
+    QPixmap head_pix(pix_path);
+    head_pix = head_pix.scaled(ui->headLabel->size(),
+                               Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->headLabel->setPixmap(head_pix);
 }
 
 void FindSuccessDlg::on_addFriendBtn_clicked()

@@ -185,7 +185,7 @@ bool MysqlDao::GetApplyList(int touid, std::vector<std::shared_ptr<ApplyInfo>>& 
         });
     try {
         std::unique_ptr<sql::PreparedStatement> pstmt(con->_conn->prepareStatement("SELECT apply.from_uid, apply.status, user.name, "
-        "user.nick, user.sex FROM friend_apply as apply join user ON apply.from_uid=user.uid WHERE apply.to_uid = ?"
+        "user.nick, user.sex, user.icon FROM friend_apply as apply join user ON apply.from_uid=user.uid WHERE apply.to_uid = ?"
         " AND apply.id > ? ORDER BY apply.id ASC LIMIT ? "));
 		pstmt->setInt(1, touid);
 		pstmt->setInt(2, begin);
@@ -198,7 +198,8 @@ bool MysqlDao::GetApplyList(int touid, std::vector<std::shared_ptr<ApplyInfo>>& 
             auto status = res->getInt("status");
             auto nick = res->getString("nick");
             auto sex = res->getInt("sex");
-			auto apply_ptr = std::make_shared<ApplyInfo>(uid, name, "", "", nick, sex, status);
+            auto icon = res->getString("icon");
+			auto apply_ptr = std::make_shared<ApplyInfo>(uid, name, "", icon, nick, sex, status);
             applyList.push_back(apply_ptr);
         }
         return true;
@@ -209,6 +210,40 @@ bool MysqlDao::GetApplyList(int touid, std::vector<std::shared_ptr<ApplyInfo>>& 
         std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
         return false;
     }
+    return false;
+}
+
+bool MysqlDao::GetFriendList(int self_uid, std::vector<std::shared_ptr<UserInfo>>& friendList)
+{
+	auto con = pool_->getConnection();
+    if (con == nullptr) {
+		return false;
+    }
+	Defer defer([this, &con]() {
+		pool_->returnConnection(std::move(con));
+		});
+    try {
+        std::unique_ptr<sql::PreparedStatement> pstmt(con->_conn->prepareStatement("SELECT * FROM friend WHERE self_id = ? "));
+		pstmt->setInt(1, self_uid);
+		std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        while (res->next()) {
+			auto friend_id = res->getInt("friend_id");
+			auto back = res->getString("back");
+			auto user_info = GetUser(friend_id);
+            if (user_info == nullptr) {
+                continue;
+            }
+			user_info->back = back;
+			friendList.push_back(user_info);
+        }
+		return true;
+    }
+	catch (sql::SQLException& e) {
+		std::cerr << "SQLException: " << e.what();
+		std::cerr << " (MySQL error code: " << e.getErrorCode();
+		std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+		return false;
+	}
     return false;
 }
 

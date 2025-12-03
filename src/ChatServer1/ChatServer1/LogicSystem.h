@@ -32,6 +32,7 @@ private:
 	bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo);
 	bool GetUserByName(std::string name, std::shared_ptr<UserInfo>& userinfo);
 	bool GetFriendApplyInfo(int uid, std::vector<std::shared_ptr<ApplyInfo>>& applyInfos);
+	bool GetFriendList(int uid, std::vector<std::shared_ptr<UserInfo>>& friendList);
 	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÈ«ÎªÊý×Ö
 	bool isPureDigit(const std::string& str);
 

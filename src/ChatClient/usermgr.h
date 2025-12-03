@@ -17,15 +17,20 @@ public:
     int GetUid();
     void SetToken(QString token);
     void SetUserInfo(std::shared_ptr<UserInfo> userinfo);
+    std::shared_ptr<UserInfo> GetUserInfo();
+    QString GetIcon();
 
     std::vector<std::shared_ptr<ApplyInfo>> GetApplyList();
+
+    std::vector<std::shared_ptr<FriendInfo>> GetChatListPerPage();
+    bool IsLoadChatFin();
+    void UpdateChatLoadedCount();
     std::vector<std::shared_ptr<FriendInfo>> GetConListPerPage();
+    bool IsLoadConFin();
     void UpdateContactLoadedCount();
 
     void AppendApplyList(QJsonArray array);
-
-    bool IsLoadConFin();
-    bool IsLoadChatFin();
+    void AppendFriendList(QJsonArray array);
 
     bool CheckFriendById(int uid);
     void AddFriend(std::shared_ptr<AuthRsp> auth_rsp);

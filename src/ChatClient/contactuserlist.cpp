@@ -205,10 +205,6 @@ void ContactUserList::slot_add_auth_firend(std::shared_ptr<AuthInfo> auth_info)
     if(isFriend){
         return;
     }
-    // 在 groupitem 之后插入新项
-    int randomValue = QRandomGenerator::global()->bounded(100); // 生成0到99之间的随机整数
-    int str_i = randomValue%strs.size();
-    int head_i = randomValue%heads.size();
 
     auto *con_user_wid = new ConUserItem();
     con_user_wid->SetInfo(auth_info);
@@ -231,13 +227,9 @@ void ContactUserList::slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp)
     if(isFriend){
         return;
     }
-    // 在 groupitem 之后插入新项
-    int randomValue = QRandomGenerator::global()->bounded(100); // 生成0到99之间的随机整数
-    int str_i = randomValue%strs.size();
-    int head_i = randomValue%heads.size();
 
     auto *con_user_wid = new ConUserItem();
-    con_user_wid->SetInfo(auth_rsp->_uid ,auth_rsp->_name, heads[head_i]);
+    con_user_wid->SetInfo(auth_rsp);
     QListWidgetItem *item = new QListWidgetItem;
     //qDebug()<<"chat_user_wid sizeHint is " << chat_user_wid->sizeHint();
     item->setSizeHint(con_user_wid->sizeHint());

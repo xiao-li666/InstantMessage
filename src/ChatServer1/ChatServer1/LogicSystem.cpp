@@ -75,6 +75,8 @@ void LogicSystem::RegisterCallBacks()
 		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	_funCallBacks[ID_AUTH_FRIEND_REQ] = std::bind(&LogicSystem::AuthFriendApply, this,
 		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	_funCallBacks[ID_TEXT_CHAT_MSG_REQ] = std::bind(&LogicSystem::DealChatTextMsg, this,
+		std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 }
 
 void LogicSystem::LoginHandler(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
@@ -375,6 +377,64 @@ void LogicSystem::AuthFriendApply(std::shared_ptr<CSession> session, const size_
 		ChatGrpcClient::GetInstance()->NotifyAuthFriend(to_ip_value, req);
 	}
 	return;
+}
+
+bool LogicSystem::DealChatTextMsg(std::shared_ptr<CSession> session, const size_t& msg_id, const std::string& msg_data)
+{
+	//解析消息
+	Json::Reader reader;
+	Json::Value root;
+	reader.parse(msg_data, root);
+	auto from_uid = root["fromuid"].asInt();
+	auto to_uid = root["touid"].asInt();
+	const Json::Value array = root["text_array"];
+	std::cout << "text chat msg from uid is  " << from_uid << " to uid is " << to_uid << std::endl;
+
+	Json::Value rtvalue;
+	rtvalue["error"] = ErrorCodes::Success;
+	rtvalue["fromuid"] = from_uid;
+	rtvalue["touid"] = to_uid;
+	rtvalue["text_array"] = array;
+	Defer defer([this, session, &rtvalue]() {
+		std::string return_str = rtvalue.toStyledString();
+		session->Send(return_str, ID_TEXT_CHAT_MSG_RSP);
+		});
+
+	//查询redis中to_uid所在的服务器ip
+	auto& conf = ConfigMgr::GetInstance();
+	std::string self_ip_str = conf["SelfServer"]["Name"];
+
+	std::string to_ip_key = USERIPPREFIX + std::to_string(to_uid);
+	std::string to_ip_value = "";
+
+	bool b_base = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
+	if (!b_base) {
+		//没有查询到，说明不在线，直接返回成功
+		std::cout << "to uid " << to_uid << " not online" << std::endl;
+		return true;
+	}
+	if (self_ip_str == to_ip_value) {
+		//在同一个服务器
+		auto session = UserMgr::GetInstance()->GetUserSession(to_uid);
+		if (session) {
+			std::string notifyStr = rtvalue.toStyledString();
+			session->Send(notifyStr, ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+		}
+		return true;
+	}
+	//不在同一个服务器，通知对应的服务器
+	TextChatMsgReq req;
+	req.set_fromuid(from_uid);
+	req.set_touid(to_uid);
+	for (const auto& text_ele : array) {
+		auto content = text_ele["content"].asString();
+		auto msgId = text_ele["msgid"].asString();
+		auto* text_msg = req.add_textmsgs();
+		text_msg->set_msgid(msgId);
+		text_msg->set_msgcontent(content);
+	}
+	ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, req, rtvalue);
+	return false;
 }
 
 bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& userinfo)

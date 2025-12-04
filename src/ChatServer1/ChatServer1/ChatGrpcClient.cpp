@@ -156,5 +156,37 @@ bool ChatGrpcClient::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<
 
 TextChatMsgRsp ChatGrpcClient::NotifyTextChatMsg(std::string server_ip, const TextChatMsgReq& req, const Json::Value& rtvalue)
 {
-	return TextChatMsgRsp();
+	TextChatMsgRsp rsp;
+	rsp.set_error(ErrorCodes::Success);
+	Defer defer([this, &rsp, &req]() {
+		rsp.set_fromuid(req.fromuid());
+		rsp.set_touid(req.touid());
+		for (const auto& text_msg : req.textmsgs()) {
+			auto* rsp_text_msg = rsp.add_textmsgs();
+			rsp_text_msg->set_msgid(text_msg.msgid());
+			rsp_text_msg->set_msgcontent(text_msg.msgcontent());
+		}
+		});
+	auto iter = _pools.find(server_ip);
+	if (iter == _pools.end()) {
+		std::cout << "ChatGrpcClient::NotifyTextChatMsg not found server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	auto conn = iter->second->getConnection();
+	if (conn == nullptr) {
+		std::cout << "ChatGrpcClient::NotifyTextChatMsg getConnection failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	ClientContext context;
+	Status status = conn->NotifyTextChatMsg(&context, req, &rsp);
+	iter->second->returnConnection(std::move(conn));
+	if (!status.ok()) {
+		std::cout << "ChatGrpcClient::NotifyTextChatMsg rpc failed for server ip " << server_ip << std::endl;
+		rsp.set_error(ErrorCodes::RPCFailed);
+		return rsp;
+	}
+	std::cout << "ChatGrpcClient::NotifyTextChatMsg rpc success for server ip " << server_ip << std::endl;
+	return rsp;
 }

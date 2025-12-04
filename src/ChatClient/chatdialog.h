@@ -22,6 +22,8 @@ public:
     void addChatUserList();
     void ClearLabelState(StateWidget *lb);
 
+    void UpdateChatMsg(std::vector<std::shared_ptr<TextChatData> > msgdata);
+
 protected:
     bool eventFilter(QObject *watched, QEvent* event) override;
     void handleGlobalMousePress(QMouseEvent* event);
@@ -43,6 +45,7 @@ private:
 
     QMap<int, QListWidgetItem*> _chat_items_added;
     int _cur_chat_uid;
+    QWidget* _last_widget;
 
 private slots:
     void slot_uploading_chatUser();
@@ -55,6 +58,12 @@ public slots:
     void slot_add_auth_friend(std::shared_ptr<AuthInfo>);
     void slot_auth_rsp(std::shared_ptr<AuthRsp>);
     void slot_jump_chat_item(std::shared_ptr<SearchInfo> si);
+    void slot_friend_info_page(std::shared_ptr<UserInfo> user_info);
+    void slot_friend_apply_page();
+    void slot_jump_chat_item_from_infopage(std::shared_ptr<UserInfo> si);
+    void slot_item_clicked(QListWidgetItem* item);
+    void slot_append_send_chat_msg(std::shared_ptr<TextChatData> msgdata);
+    void slot_text_chat_msg(std::shared_ptr<TextChatMsg> msg);
 };
 
 #endif // CHATDIALOG_H

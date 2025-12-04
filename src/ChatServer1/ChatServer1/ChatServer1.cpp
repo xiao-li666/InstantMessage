@@ -40,11 +40,14 @@ int main()
         CServer cserver(io_context, atoi(port.c_str()));
         io_context.run();
 
+		std::cout << "ChatServer is shutting down." << std::endl;
         RedisMgr::GetInstance()->HDel(LOGIN_COUNT, serverName);
         RedisMgr::GetInstance()->Close();
+		std::cout << "Redis connection closed." << std::endl;
 		grpc_thread.join();
     }
     catch (std::exception& ec) {
         std::cout << ec.what() << std::endl;
     }
+    std::cout << "Redis connection closed." << std::endl;
 }

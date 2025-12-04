@@ -39,6 +39,8 @@ public:
     bool AlreadyApply(int uid);
     void SetApply(std::shared_ptr<ApplyInfo>);
     void DelApply(std::shared_ptr<ApplyInfo>);
+
+    void AppendFriendChatMsg(int friend_id,std::vector<std::shared_ptr<TextChatData>>);
 private:
     UserMgr();
     std::shared_ptr<UserInfo> _user_info;

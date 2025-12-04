@@ -89,7 +89,7 @@
             <item>
              <widget class="QLabel" name="titleLabel">
               <property name="text">
-               <string>鸠魁</string>
+               <string/>
               </property>
              </widget>
             </item>

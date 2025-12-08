@@ -7,6 +7,7 @@
 **所使用技术**：多线程，网络编程，Qt信号槽，ASIO网络库，GRPC框架，mysql，redis，设计模式
 
 项目整体框架如下：
+<img width="1071" height="661" alt="model" src="https://github.com/user-attachments/assets/5e5a051d-5254-4760-8e62-0d527d50d874" />
 
 ![图片](E:\cppCode\MyProject\images\model.png)
 

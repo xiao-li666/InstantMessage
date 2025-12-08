@@ -184,7 +184,7 @@ public:
     void retranslateUi(QWidget *ChatPage)
     {
         ChatPage->setWindowTitle(QCoreApplication::translate("ChatPage", "Form", nullptr));
-        titleLabel->setText(QCoreApplication::translate("ChatPage", "\351\270\240\351\255\201", nullptr));
+        titleLabel->setText(QString());
         emoLabel->setText(QString());
         fileLabel->setText(QString());
         recvBtn->setText(QCoreApplication::translate("ChatPage", "\346\216\245\346\224\266", nullptr));

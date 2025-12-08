@@ -77,9 +77,9 @@ ChatDialog::ChatDialog(QWidget *parent)
 
     ui->sideChatLabel->SetSelected(true);
     //设置选中条目
-    SetSelectChatItem();
+    //SetSelectChatItem();
     //更新聊天界面信息
-    SetSelectChatPage();
+    //SetSelectChatPage();
 
     //为searchlist设置searchedit
     ui->searchUserList->SetSearchEdit(ui->searchEdit);

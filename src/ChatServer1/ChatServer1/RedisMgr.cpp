@@ -307,6 +307,11 @@ RedisConPool::RedisConPool(size_t poolSize, const char* host, int port, const ch
             continue;
         }
         auto reply = (redisReply*)redisCommand(context, "AUTH %s", pwd);
+		if (reply == nullptr) {
+			std::cout << "认证失败" << std::endl;
+			redisFree(context);
+			continue;
+		}
         if (reply->type == REDIS_REPLY_ERROR) {
             std::cout << "认证失败" << std::endl;
             //执行成功 释放redisCommand执行后返回的redisReply所占用的内存

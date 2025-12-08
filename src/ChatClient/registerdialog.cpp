@@ -36,26 +36,26 @@ RegisterDialog::RegisterDialog(QWidget *parent)
     });
     ui->passLabel->setCursor(Qt::PointingHandCursor);
     ui->confirmLabel->setCursor(Qt::PointingHandCursor);
-    ui->passLabel->SetState("unvisible","unvisible_hover","unvisible_selected","visible","visible_hover","visible_selected");
-    ui->confirmLabel->SetState("unvisible","unvisible_hover","unvisible_selected","visible","visible_hover","visible_selected");
+    ui->passLabel->SetState("unvisible","unvisible_hover","","visible","visible_hover","");
+    ui->confirmLabel->SetState("unvisible","unvisible_hover","","visible","visible_hover","");
 
     connect(ui->passLabel, &ClickedLabel::clicked, this, [this](){
         if(ui->passLabel->GetCurState() == ClickLbState::Normal){
-            ui->passwordEdit->setEchoMode(QLineEdit::Normal);
-        }
-        else{
             ui->passwordEdit->setEchoMode(QLineEdit::Password);
         }
-        repolish(ui->passwordEdit);
+        else{
+            ui->passwordEdit->setEchoMode(QLineEdit::Normal);
+        }
+        //repolish(ui->passwordEdit);
     });
     connect(ui->confirmLabel, &ClickedLabel::clicked, this, [this](){
         if(ui->confirmLabel->GetCurState() == ClickLbState::Normal){
-            ui->sureEdit->setEchoMode(QLineEdit::Normal);
-        }
-        else{
             ui->sureEdit->setEchoMode(QLineEdit::Password);
         }
-        repolish(ui->sureEdit);
+        else{
+            ui->sureEdit->setEchoMode(QLineEdit::Normal);
+        }
+        //repolish(ui->sureEdit);
     });
 
     //界面转换

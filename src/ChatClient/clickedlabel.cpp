@@ -78,7 +78,7 @@ void ClickedLabel::mouseReleaseEvent(QMouseEvent *e)
             update();
         }
         else{
-            _curState = ClickLbState::Normal;
+            //_curState = ClickLbState::Selected;
             setProperty("state",_selectedHover);
             repolish(this);
             update();

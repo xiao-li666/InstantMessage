@@ -186,7 +186,7 @@ public:
 
         retranslateUi(ChatDialog);
 
-        stackedWidget->setCurrentIndex(2);
+        stackedWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(ChatDialog);

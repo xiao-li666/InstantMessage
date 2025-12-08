@@ -49,5 +49,4 @@ int main()
     catch (std::exception& ec) {
         std::cout << ec.what() << std::endl;
     }
-    std::cout << "Redis connection closed." << std::endl;
 }
